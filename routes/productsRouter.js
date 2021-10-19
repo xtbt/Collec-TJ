@@ -36,4 +36,12 @@ router.get('/:productId', (request, response) => {
   });
 });
 
+router.post('/', (request, response) => {
+  const body = request.body;
+  response.json({
+    message: 'Product created', 
+    data: body
+  })
+});
+
 module.exports = router;
