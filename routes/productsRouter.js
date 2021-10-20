@@ -1,47 +1,56 @@
 const express = require('express');
-const faker = require('faker');
+const ProductsService = require('../services/ProductsService');
 
 const router = express.Router();
+const productsService = new ProductsService();
 
 router.get('/', (request, response) => {
-  const { designer, gender, limit } = request.query;
-  let queryFilters = '';
-  if (designer) {
-    queryFilters += 'Designer: ' + designer + '. ';
-  };
-  if (gender) {
-    queryFilters += 'Gender: ' + gender + '. ';
-  };
-  const products = [];
-  for (let i = 0 ; i < (limit || 50) ; i ++) {
-    products.push({
-      designerName: faker.company.companyName(),
-      productName: faker.commerce.productName(),
-      productPrice: Number(faker.commerce.price()),
-      productImage: faker.image.imageUrl()
-    });
-  };
-  response.json({
-    filtro: queryFilters || 'Sin filtro',
-    limit: limit || 'No limit defined',
-    data: products
-  });
+  const productsResponse = productsService.getAll(request.query);
+
+  response.json(productsResponse);
 });
 
 router.get('/:productId', (request, response) => {
   const { productId } = request.params;
-  response.json({
-    productID: productId,
-    productName: 'My product ' + productId
-  });
+  const productsResponse = productsService.get(productId);
+
+  response.json(productsResponse);
 });
 
 router.post('/', (request, response) => {
   const body = request.body;
   response.json({
-    message: 'Product created', 
+    message: 'Product created',
     data: body
-  })
+  });
+});
+
+router.patch('/:productId', (request, response) => {
+  const { productId } = request.params;
+  const body = request.body;
+  response.json({
+    message: 'Product partially updated',
+    productId: productId,
+    data: body
+  });
+});
+
+router.put('/:productId', (request, response) => {
+  const { productId } = request.params;
+  const body = request.body;
+  response.json({
+    message: 'Product completely updated',
+    productId: productId,
+    data: body
+  });
+});
+
+router.delete('/:productId', (request, response) => {
+  const { productId } = request.params;
+  response.json({
+    message: 'Product deleted',
+    productId: productId
+  });
 });
 
 module.exports = router;
