@@ -8,9 +8,9 @@ class ProductsService {
   }
 
   generate() {
-    for (let i = 0 ; i < 999 ; i ++) {
+    for (let i = 0 ; i < 1000 ; i ++) {
       this.products.push({
-        productId: faker.datatype.number(999),
+        productId: faker.datatype.number(9999),
         productName: faker.commerce.productName(),
         productPrice: Number(faker.commerce.price()),
         productImage: faker.image.imageUrl()
@@ -37,16 +37,34 @@ class ProductsService {
     };
   }
 
-  create() {
-
+  create(data) {
+    const newProduct = {
+      productId: 10000 + faker.datatype.number(9999), 
+      ...data
+    }
+    this.products.push(newProduct);
+    return newProduct;
   }
 
-  update() {
-
+  update(productId, changes) {
+    const index = this.products.findIndex(item => item.productId == productId);
+    if (index > 0) {
+      this.products[index] = changes;
+    } else {
+      throw new Error('Product not found');
+    };
+    return this.products[index];
   }
 
-  delete() {
-
+  delete(productId) {
+    const index = this.products.findIndex(item => item.productId == productId);
+    const deletedItem = this.products[index];
+    if (index > 0) {
+      this.products.splice(index, 1);
+    } else {
+      throw new Error('Product not found');
+    };
+    return deletedItem;
   }
 }
 

@@ -19,19 +19,20 @@ router.get('/:productId', (request, response) => {
 
 router.post('/', (request, response) => {
   const body = request.body;
-  response.json({
+  const newProduct = productsService.create(body);
+  response.status(201).json({
     message: 'Product created',
-    data: body
+    data: newProduct
   });
 });
 
 router.patch('/:productId', (request, response) => {
   const { productId } = request.params;
   const body = request.body;
-  response.json({
-    message: 'Product partially updated',
-    productId: productId,
-    data: body
+  const updatedProduct = productsService.update(productId, body);
+  response.status(201).json({
+    message: 'Product updated',
+    data: updatedProduct
   });
 });
 
