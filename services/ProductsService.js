@@ -18,7 +18,7 @@ class ProductsService {
     };
   }
 
-  getAll(queryString) {
+  async getAll(queryString) {
     const { productId, productName } = queryString;
     // Code to get request query data ...
 
@@ -29,7 +29,7 @@ class ProductsService {
     };
   }
 
-  get(productId) {
+  async get(productId) {
     const product = this.products.find(item => item.productId == productId);
     return {
       totalItems: product ? 1 : 0,
@@ -37,29 +37,33 @@ class ProductsService {
     };
   }
 
-  create(data) {
+  async create(data) {
     const newProduct = {
-      productId: 10000 + faker.datatype.number(9999), 
+      productId: 10000 + faker.datatype.number(9999),
       ...data
     }
     this.products.push(newProduct);
     return newProduct;
   }
 
-  update(productId, changes) {
+  async update(productId, changes) {
     const index = this.products.findIndex(item => item.productId == productId);
-    if (index > 0) {
-      this.products[index] = changes;
+    if (index >= 0) {
+      const product = this.products[index];
+      this.products[index] = {
+        ...product,
+        ...changes
+      };
     } else {
       throw new Error('Product not found');
     };
     return this.products[index];
   }
 
-  delete(productId) {
+  async delete(productId) {
     const index = this.products.findIndex(item => item.productId == productId);
     const deletedItem = this.products[index];
-    if (index > 0) {
+    if (index >= 0) {
       this.products.splice(index, 1);
     } else {
       throw new Error('Product not found');
